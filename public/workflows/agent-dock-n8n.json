@@ -1,0 +1,95 @@
+{
+  "id": "agentDockBridge1",
+  "name": "Agent Dock · Uji koneksi dan callback",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agent-dock",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "agent-dock-webhook",
+      "name": "Agent Dock Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "agent-dock-bridge",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "agentDockHeader1",
+          "name": "Agent Dock · Webhook Bearer"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"accepted\":true}",
+        "options": { "responseCode": 202 }
+      },
+      "id": "agent-dock-accept",
+      "name": "Terima tugas (202)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [260, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ /^http:[/][/]127[.]0[.]0[.]1:4310[/]api[/]hooks[/][a-f0-9-]{36}[/][a-f0-9-]{36}$/.test($('Agent Dock Webhook').first().json.body.callbackUrl || '') ? $('Agent Dock Webhook').first().json.body.callbackUrl : 'http://127.0.0.1:4310/api/hooks/invalid/invalid' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Agent Dock Webhook').first().json.body.callbackToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('Agent Dock Webhook').first().json.body.message.trim().toLowerCase() === '/tanya' ? { status: 'waiting', question: 'Koneksi n8n berhasil. Kirim balasan untuk menguji kelanjutan sesi.' } : { status: 'completed', message: 'Pesan diterima n8n: ' + $('Agent Dock Webhook').first().json.body.message, summary: 'Uji koneksi n8n berhasil: webhook menerima pesan dan callback kembali ke Agent Dock.' } }}",
+        "options": {
+          "redirect": { "redirect": { "followRedirects": false } },
+          "timeout": 10000
+        }
+      },
+      "id": "agent-dock-callback",
+      "name": "Kirim status ke Agent Dock",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [520, 0]
+    },
+    {
+      "parameters": {
+        "content": "## Uji integrasi Agent Dock\nWorkflow ini menguji koneksi, bukan agent AI. Pesan biasa dibalas melalui callback. Kirim /tanya untuk menguji status Butuh masukan, lalu balas di sesi yang sama.\n\nPasang credential Header Auth: nama Authorization, nilai Bearer TOKEN. Gunakan token yang sama di koneksi Agent Dock.\n\nTambahkan langkah otomasi sebelum callback dan sesuaikan hasilnya untuk pekerjaan nyata. Callback dibatasi ke Agent Dock pada 127.0.0.1:4310. Jangan menyalin callbackToken ke output atau ringkasan.",
+        "height": 320,
+        "width": 520
+      },
+      "id": "agent-dock-notes",
+      "name": "Petunjuk",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [0, 220]
+    }
+  ],
+  "connections": {
+    "Agent Dock Webhook": {
+      "main": [[{ "node": "Terima tugas (202)", "type": "main", "index": 0 }]]
+    },
+    "Terima tugas (202)": {
+      "main": [[{ "node": "Kirim status ke Agent Dock", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false
+  },
+  "pinData": {},
+  "tags": []
+}

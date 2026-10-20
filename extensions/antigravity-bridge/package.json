@@ -1,0 +1,25 @@
+{
+  "name": "antigravity-bridge",
+  "displayName": "Agent Dock · Antigravity Bridge",
+  "description": "Connect Agent Dock to the native Antigravity agent panel on this machine.",
+  "version": "0.1.0",
+  "publisher": "agent-dock",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "main": "./extension.cjs",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "agentDock.connect",
+        "title": "Agent Dock: Connect workspace"
+      }
+    ]
+  }
+}

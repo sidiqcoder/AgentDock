@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Production build outputs
+dist/
+*.tgz
+
+# Local runtime data & caches (sensitive tokens, sessions, and state)
+.data/
+.cache/
+test-results/
+playwright-report/
+.playwright-mcp/
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+*.pem
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+crash.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# Editor directories (except shared configurations)
+.idea/
+*.sublime-project
+*.sublime-workspace
+
