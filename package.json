@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sidiq/agentdock.git"
+    "url": "git+https://github.com/sidiq/agentdock.git"
   },
   "bugs": {
     "url": "https://github.com/sidiq/agentdock/issues"
@@ -26,8 +26,8 @@
     "n8n"
   ],
   "bin": {
-    "agentdock": "./bin/agentdock.mjs",
-    "agent-dock": "./bin/agentdock.mjs"
+    "agentdock": "bin/agentdock.mjs",
+    "agent-dock": "bin/agentdock.mjs"
   },
   "files": [
     "bin",
