@@ -6,7 +6,7 @@ import {
   buildResumeCommand,
   resolveExecArgs,
 } from '../server/external-sessions.js';
-import { Manager } from '../server/manager.js';
+import { Manager, detectTerminalPrompt } from '../server/manager.js';
 import { Store } from '../server/store.js';
 
 test('parseOpenCodeSessionList parses valid JSON array, handles text prefix, and sorts by update time', () => {
@@ -147,4 +147,27 @@ test('Manager creates session with resume command and external metadata', async 
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+test('detectTerminalPrompt detects permission requests and interactive questions', () => {
+  assert.equal(
+    detectTerminalPrompt('Allow bash command npm test? [y/n]'),
+    'Allow bash command npm test? [y/n]',
+  );
+  assert.equal(
+    detectTerminalPrompt('Do you want to execute this command? (y/n)'),
+    'Do you want to execute this command? (y/n)',
+  );
+  assert.equal(
+    detectTerminalPrompt('Allow Codex to run this command? (y)es / (n)o'),
+    'Allow Codex to run this command? (y)es / (n)o',
+  );
+  assert.equal(
+    detectTerminalPrompt("? Allow bash command 'git status'\n  > Allow once\n    Deny"),
+    "? Allow bash command 'git status'",
+  );
+  // Non-prompt logs should not trigger
+  assert.equal(detectTerminalPrompt('Compiling src/index.ts... done in 200ms'), undefined);
+  assert.equal(detectTerminalPrompt('Running test suite [1/10] tests passed'), undefined);
+  assert.equal(detectTerminalPrompt(''), undefined);
 });

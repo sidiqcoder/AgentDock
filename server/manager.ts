@@ -312,8 +312,24 @@ export class Manager extends EventEmitter {
         session.output = (session.output + data).slice(-MAX_OUTPUT);
         this.store.saveSoon();
         this.emit('output', { id, data });
+        if (session.status === 'running') {
+          if (handle.promptTimer) clearTimeout(handle.promptTimer);
+          handle.promptTimer = setTimeout(() => {
+            if (this.handles.get(id) !== handle || session.status !== 'running') return;
+            const prompt = detectTerminalPrompt(session.output);
+            if (prompt) {
+              session.question = prompt;
+              this.setStatus(
+                session,
+                'waiting',
+                `Terminal meminta masukan: ${prompt.slice(0, 100)}`,
+              );
+            }
+          }, 350);
+        }
       });
       handle.pty.onExit(({ exitCode }) => {
+        if (handle.promptTimer) clearTimeout(handle.promptTimer);
         if (!handle.stopped && handle.pty) releaseExitedPty(handle.pty);
         if (this.handles.get(id) !== handle) return;
         this.handles.delete(id);
@@ -364,15 +380,12 @@ export class Manager extends EventEmitter {
     const handle = this.handles.get(id);
     if (!handle?.pty || handle.stopped)
       throw new Error('Terminal tidak aktif. Jalankan kembali sesi.');
+    if (handle.promptTimer) clearTimeout(handle.promptTimer);
     handle.pty.write(data);
     const disconnectingIde =
       this.connector(session.connectorId).localIntegration === 'antigravity' &&
       /^\/(exit|quit)\r$/.test(data);
-    if (
-      !disconnectingIde &&
-      data.includes('\r') &&
-      ['waiting', 'completed'].includes(session.status)
-    )
+    if (!disconnectingIde && ['waiting', 'completed'].includes(session.status))
       this.setStatus(session, 'running', 'Masukan dikirim ke terminal.');
   }
   resize(id: string, cols: number, rows: number) {
@@ -425,6 +438,7 @@ export class Manager extends EventEmitter {
     const handle = this.handles.get(id);
     if (!handle) throw new Error('Tidak ada proses aktif.');
     handle.stopped = true;
+    if (handle.promptTimer) clearTimeout(handle.promptTimer);
     handle.controller?.abort();
     delete session.pendingAction;
     handle.pty?.kill();
