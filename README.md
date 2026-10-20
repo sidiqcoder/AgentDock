@@ -1,6 +1,6 @@
-# Agent Dock (`@sidiq/agentdock`)
+# Agent Dock (`@sidiqcoder/agentdock`)
 
-[![npm version](https://img.shields.io/npm/v/@sidiq/agentdock.svg)](https://www.npmjs.com/package/@sidiq/agentdock)
+[![npm version](https://img.shields.io/npm/v/@sidiqcoder/agentdock.svg)](https://www.npmjs.com/package/@sidiqcoder/agentdock)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D22.12-brightgreen.svg)](https://nodejs.org/)
 
@@ -13,13 +13,13 @@ Dashboard lokal dan orchestrator untuk mengawasi agent CLI, berbicara dengan mod
 Jalankan langsung tanpa perlu clone repositori:
 
 ```sh
-npx @sidiq/agentdock
+npx @sidiqcoder/agentdock
 ```
 
 Atau pasang secara global di sistem Anda:
 
 ```sh
-npm install -g @sidiq/agentdock
+npm install -g @sidiqcoder/agentdock
 agentdock
 ```
 

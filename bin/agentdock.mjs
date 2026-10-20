@@ -12,12 +12,12 @@ const args = process.argv.slice(2);
 
 if (args.includes('--help') || args.includes('-h')) {
   console.log(`
-Agent Dock (@sidiq/agentdock)
+Agent Dock (@sidiqcoder/agentdock)
 Local orchestrator & dashboard to supervise CLI agents, chat with models, and run workflows.
 
 Usage:
   agentdock [options]
-  npx @sidiq/agentdock [options]
+  npx @sidiqcoder/agentdock [options]
 
 Options:
   --port <number>     Set port number (default: 4310, or PORT env)

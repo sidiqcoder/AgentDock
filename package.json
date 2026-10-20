@@ -1,5 +1,5 @@
 {
-  "name": "@sidiq/agentdock",
+  "name": "@sidiqcoder/agentdock",
   "version": "0.1.0",
   "description": "Local orchestrator and dashboard to monitor CLI agents, chat with models via 9router / OpenAI-compatible APIs, and run n8n workflows",
   "type": "module",
@@ -7,12 +7,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sidiq/agentdock.git"
+    "url": "git+https://github.com/sidiqcoder/AgentDock.git"
   },
   "bugs": {
-    "url": "https://github.com/sidiq/agentdock/issues"
+    "url": "https://github.com/sidiqcoder/AgentDock/issues"
   },
-  "homepage": "https://github.com/sidiq/agentdock#readme",
+  "homepage": "https://github.com/sidiqcoder/AgentDock#readme",
   "keywords": [
     "agent",
     "ai",
