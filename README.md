@@ -33,8 +33,8 @@ Prasyarat: Node.js **22.12+**, npm, dan Windows 10 1809+ / macOS / Linux yang di
 
 ```sh
 # Clone repositori
-git clone https://github.com/sidiq/agentdock.git
-cd agentdock
+git clone https://github.com/sidiqcoder/AgentDock.git
+cd AgentDock
 
 # Pasang dependensi
 npm install
@@ -53,6 +53,42 @@ npm start
 ```
 
 Ubah port dengan variabel lingkungan `PORT`. Ubah direktori penyimpanan menggunakan `AGENT_DOCK_DATA_DIR`. Data default pada clone lokal disimpan di `.data/state.json` (diabaikan oleh Git), dan pada instalasi global npm disimpan di `~/.agent-dock`.
+
+### Opsi Baris Perintah (CLI Options)
+
+Saat dijalankan melalui `agentdock` atau `npx @sidiqcoder/agentdock`:
+
+```text
+Usage:
+  agentdock [options]
+  npx @sidiqcoder/agentdock [options]
+
+Options:
+  --port <number>     Menentukan nomor port (default: 4310 atau env PORT)
+  --tray              Mengaktifkan ikon system tray Windows (aktif secara default pada Windows)
+  --no-tray           Menonaktifkan ikon system tray Windows
+  --production        Menjalankan dengan aset frontend yang sudah di-build (default)
+  --open / --no-open  Membuka atau mencegah browser terbuka otomatis saat server aktif
+  -v, --version       Menampilkan versi
+  -h, --help          Menampilkan panduan bantuan
+```
+
+### System Tray & Auto-start Windows
+
+Pada Windows, Agent Dock terintegrasi dengan tray icon:
+
+- **Background Mode:** Berjalan senyap di latar belakang. Jika port 4310 sudah aktif, menjalankan aplikasi lagi akan otomatis membuka antarmuka dashboard di browser Anda.
+- **Tray Menu:** Klik kanan ikon tray Agent Dock untuk:
+  - Membuka Dashboard browser
+  - Mengaktifkan / Menolak **Auto-start Windows**
+  - Menghentikan server (**Keluar**)
+- **Perintah Auto-start:**
+  ```sh
+  npm run autostart:enable   # Pasang startup saat Windows login
+  npm run autostart:disable  # Hapus dari startup
+  npm run autostart:status   # Cek status auto-start
+  ```
+  _(Juga dapat dijalankan tanpa konsol melalui skrip VBS `agent-dock.vbs`)_
 
 ## Alur v1
 
@@ -75,7 +111,15 @@ Menu **Sessions** menampilkan sesi yang belum berjalan dan sesi yang masih aktif
 
 Menu **History** menampilkan sesi yang selesai, gagal, atau dihentikan setelah prosesnya tidak lagi aktif. Filter berdasarkan agent dan status, cari nama / isi percakapan / ringkasan, atau urutkan berdasarkan waktu pembaruan. Buka sesi untuk membaca terminal, percakapan, ringkasan, dan aktivitas, atau melanjutkannya melalui kontrol yang tersedia. Sesi CLI berstatus selesai dengan proses yang masih hidup tetap berada di **Sessions**.
 
-Ketika CLI dijalankan ulang, output, ringkasan, status, dan waktu proses sebelumnya disimpan pada tab **Riwayat proses**. Output proses saat ini tetap berada di tab **Terminal**. Riwayat tersimpan setelah server dimulai ulang dan tetap ada sampai sesi dihapus; setiap proses menyimpan maksimal 256.000 karakter output. Riwayat yang sudah terhapus sebelum fitur ini tersedia tidak bisa dipulihkan. History hanya mencakup sesi yang dibuat di Agent Dock; percakapan di aplikasi agent lain belum diimpor.
+Ketika CLI dijalankan ulang, output, ringkasan, status, dan waktu proses sebelumnya disimpan pada tab **Riwayat proses**. Output proses saat ini tetap berada di tab **Terminal**. Riwayat tersimpan setelah server dimulai ulang dan tetap ada sampai sesi dihapus; setiap proses menyimpan maksimal 256.000 karakter output.
+
+### Impor dan Resume Sesi Eksternal
+
+Agent Dock mendukung integrasi dengan sesi CLI yang telah dijalankan di luar dashboard:
+
+- **Deteksi Otomatis:** Mendeteksi sesi aktif dan riwayat dari **OpenCode** dan **Codex**.
+- **Pratinjau Percakapan:** Membaca transkrip, daftar giliran, dan pesan sebelumnya tanpa perlu membuka terminal CLI secara manual.
+- **Lanjutkan Sesi (Resume):** Mengambil alih sesi eksternal dan melanjutkannya di dalam Agent Dock melalui satu klik tombol **Lanjutkan sesi** dengan argumen resume yang disanitasi secara otomatis.
 
 ## Tiga jenis runtime
 
@@ -163,13 +207,14 @@ Referensi: [Codex App Server: pembacaan akun dan rate limit](https://developers.
 
 ## Status dan ringkasan CLI
 
-CLI generik tidak menyediakan protokol universal untuk “menunggu masukan” atau “giliran selesai”. Karena itu Agent Dock tidak menebak status dari teks terminal. Status berubah berdasarkan:
+Status sesi diperbarui secara otomatis dan dinamis:
 
-- Proses diluncurkan → `running`.
-- Proses keluar 0 → `completed`; kode lain → `failed`.
-- Hook agent → `running`, `waiting`, `completed`, atau `failed`.
-- Kontrol **Status CLI** → perubahan manual, tercatat di aktivitas.
-- Pengguna menghentikan proses → `stopped`.
+- **Deteksi Prompt Interaktif:** Agent Dock memindai output terminal secara real-time untuk mendeteksi permintaan izin atau konfirmasi interaktif CLI (misalnya pertanyaan konfirmasi `[y/n]`, persetujuan perintah `Allow bash command?`, atau selector menu) dan otomatis mengubah status sesi menjadi `waiting` (Butuh masukan).
+- **Proses diluncurkan** → `running`.
+- **Proses keluar 0** → `completed`; kode lain → `failed`.
+- **Hook agent** → `running`, `waiting`, `completed`, atau `failed`.
+- **Kontrol Status CLI** → perubahan manual oleh pengguna, tercatat di log aktivitas.
+- **Pengguna menghentikan proses** → `stopped`.
 
 Hook `completed` dapat menandai tugas selesai saat proses CLI masih hidup untuk tugas berikutnya. Hook menyediakan ringkasan agent. Tanpa hook, ketika proses berakhir aplikasi hanya menampilkan **cuplikan output terakhir**, bukan ringkasan buatan AI.
 
