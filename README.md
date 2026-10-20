@@ -4,26 +4,26 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D22.12-brightgreen.svg)](https://nodejs.org/)
 
-Dashboard lokal dan orchestrator untuk mengawasi agent CLI, berbicara dengan model melalui 9router atau API kompatibel OpenAI, dan menjalankan workflow n8n. Pengguna tetap memegang kendali penuh, memberi instruksi, dan menyetujui keputusan secara langsung.
+Local orchestrator and dashboard to monitor CLI agents, chat with models via 9router or OpenAI-compatible APIs, and run n8n workflows. Keeps you in full control to supervise, instruct, and approve agent actions directly.
 
 ---
 
-## Memulai Cepat (Quick Start via npx)
+## Quick Start (via npx)
 
-Jalankan langsung tanpa perlu clone repositori:
+Run immediately without cloning the repository:
 
 ```sh
 npx @sidiqcoder/agentdock
 ```
 
-Atau pasang secara global di sistem Anda:
+Or install globally on your system:
 
 ```sh
 npm install -g @sidiqcoder/agentdock
 agentdock
 ```
 
-Dashboard otomatis terbuka di browser pada **http://127.0.0.1:4310**.
+The dashboard will automatically open in your default browser at **http://127.0.0.1:4310**.
 
 ---
 
@@ -54,9 +54,9 @@ npm start
 
 Ubah port dengan variabel lingkungan `PORT`. Ubah direktori penyimpanan menggunakan `AGENT_DOCK_DATA_DIR`. Data default pada clone lokal disimpan di `.data/state.json` (diabaikan oleh Git), dan pada instalasi global npm disimpan di `~/.agent-dock`.
 
-### Opsi Baris Perintah (CLI Options)
+### Command Line Options (CLI)
 
-Saat dijalankan melalui `agentdock` atau `npx @sidiqcoder/agentdock`:
+When running via `agentdock` or `npx @sidiqcoder/agentdock`:
 
 ```text
 Usage:
@@ -64,31 +64,31 @@ Usage:
   npx @sidiqcoder/agentdock [options]
 
 Options:
-  --port <number>     Menentukan nomor port (default: 4310 atau env PORT)
-  --tray              Mengaktifkan ikon system tray Windows (aktif secara default pada Windows)
-  --no-tray           Menonaktifkan ikon system tray Windows
-  --production        Menjalankan dengan aset frontend yang sudah di-build (default)
-  --open / --no-open  Membuka atau mencegah browser terbuka otomatis saat server aktif
-  -v, --version       Menampilkan versi
-  -h, --help          Menampilkan panduan bantuan
+  --port <number>     Set port number (default: 4310 or PORT env)
+  --tray              Enable Windows system tray icon (enabled by default on Windows)
+  --no-tray           Disable Windows system tray icon
+  --production        Run with pre-built production assets (default)
+  --open / --no-open  Open or prevent opening browser automatically on start
+  -v, --version       Show version number
+  -h, --help          Show help message
 ```
 
-### System Tray & Auto-start Windows
+### Windows System Tray & Auto-start
 
-Pada Windows, Agent Dock terintegrasi dengan tray icon:
+On Windows, Agent Dock integrates natively with the System Tray:
 
-- **Background Mode:** Berjalan senyap di latar belakang. Jika port 4310 sudah aktif, menjalankan aplikasi lagi akan otomatis membuka antarmuka dashboard di browser Anda.
-- **Tray Menu:** Klik kanan ikon tray Agent Dock untuk:
-  - Membuka Dashboard browser
-  - Mengaktifkan / Menolak **Auto-start Windows**
-  - Menghentikan server (**Keluar**)
-- **Perintah Auto-start:**
+- **Background Mode:** Runs quietly in the background. If port 4310 is already in use, running the command again will automatically open/focus the dashboard in your default browser.
+- **Tray Menu:** Right-click the Agent Dock tray icon to:
+  - Open Dashboard in browser
+  - Toggle **Windows Auto-start** on or off
+  - Stop and terminate the server (**Exit**)
+- **Auto-start Commands:**
   ```sh
-  npm run autostart:enable   # Pasang startup saat Windows login
-  npm run autostart:disable  # Hapus dari startup
-  npm run autostart:status   # Cek status auto-start
+  npm run autostart:enable   # Enable auto-start on Windows login
+  npm run autostart:disable  # Disable auto-start
+  npm run autostart:status   # Check auto-start status
   ```
-  _(Juga dapat dijalankan tanpa konsol melalui skrip VBS `agent-dock.vbs`)_
+  _(Can also be run silently without a console window via `agent-dock.vbs`)_
 
 ## Alur v1
 
